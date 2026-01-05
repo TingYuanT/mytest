@@ -1,89 +1,87 @@
 <!DOCTYPE html>
-<html>
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Welcome to Firebase Hosting</title>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>学习打卡系统</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="style.css">
+    <!-- Firebase SDK - 使用兼容版本（compat）以支持全局 firebase 对象 -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
+</head>
+<body>
+    <div class="container mt-4">
+        <div class="text-center mb-4">
+            <h1 class="display-4">📚 学习打卡系统</h1>
+            <p class="text-muted">记录每天的学习进度，互相监督，共同进步</p>
+        </div>
 
-    <!-- update the version number as needed -->
-    <script defer src="/__/firebase/12.7.0/firebase-app-compat.js"></script>
-    <!-- include only the Firebase features as you need -->
-    <script defer src="/__/firebase/12.7.0/firebase-auth-compat.js"></script>
-    <script defer src="/__/firebase/12.7.0/firebase-database-compat.js"></script>
-    <script defer src="/__/firebase/12.7.0/firebase-firestore-compat.js"></script>
-    <script defer src="/__/firebase/12.7.0/firebase-functions-compat.js"></script>
-    <script defer src="/__/firebase/12.7.0/firebase-messaging-compat.js"></script>
-    <script defer src="/__/firebase/12.7.0/firebase-storage-compat.js"></script>
-    <script defer src="/__/firebase/12.7.0/firebase-analytics-compat.js"></script>
-    <script defer src="/__/firebase/12.7.0/firebase-remote-config-compat.js"></script>
-    <script defer src="/__/firebase/12.7.0/firebase-performance-compat.js"></script>
-    <!-- 
-      initialize the SDK after all desired features are loaded, set useEmulator to false
-      to avoid connecting the SDK to running emulators.
-    -->
-    <script defer src="/__/firebase/init.js?useEmulator=true"></script>
+        <!-- 登录表单 -->
+        <div id="login-form" class="card shadow-sm">
+            <div class="card-body p-4">
+                <h2 class="card-title text-center mb-4">登录</h2>
+                <div class="mb-3">
+                    <label for="email" class="form-label">邮箱</label>
+                    <input type="email" class="form-control form-control-lg" id="email" placeholder="your@email.com" autocomplete="email">
+                </div>
+                <div class="mb-3">
+                    <label for="password" class="form-label">密码</label>
+                    <input type="password" class="form-control form-control-lg" id="password" placeholder="请输入密码" autocomplete="current-password">
+                </div>
+                <button class="btn btn-primary btn-lg w-100" onclick="login()">登录</button>
+            </div>
+        </div>
 
-    <style media="screen">
-      body { background: #ECEFF1; color: rgba(0,0,0,0.87); font-family: Roboto, Helvetica, Arial, sans-serif; margin: 0; padding: 0; }
-      #message { background: white; max-width: 360px; margin: 100px auto 16px; padding: 32px 24px; border-radius: 3px; }
-      #message h2 { color: #ffa100; font-weight: bold; font-size: 16px; margin: 0 0 8px; }
-      #message h1 { font-size: 22px; font-weight: 300; color: rgba(0,0,0,0.6); margin: 0 0 16px;}
-      #message p { line-height: 140%; margin: 16px 0 24px; font-size: 14px; }
-      #message a { display: block; text-align: center; background: #039be5; text-transform: uppercase; text-decoration: none; color: white; padding: 16px; border-radius: 4px; }
-      #message, #message a { box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24); }
-      #load { color: rgba(0,0,0,0.4); text-align: center; font-size: 13px; }
-      @media (max-width: 600px) {
-        body, #message { margin-top: 0; background: white; box-shadow: none; }
-        body { border-top: 16px solid #ffa100; }
-      }
-    </style>
-  </head>
-  <body>
-    <div id="message">
-      <h2>Welcome</h2>
-      <h1>Firebase Hosting Setup Complete</h1>
-      <p>You're seeing this because you've successfully setup Firebase Hosting. Now it's time to go build something extraordinary!</p>
-      <a target="_blank" href="https://firebase.google.com/docs/hosting/">Open Hosting Documentation</a>
+        <!-- 主内容区域 -->
+        <div id="main-content" style="display:none;">
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h3 class="mb-0">欢迎，<span id="user-name"></span>！</h3>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <label for="checkin-input" class="form-label">今天的学习情况</label>
+                        <textarea class="form-control" id="checkin-input" rows="3" placeholder="例如：今天学习了2小时英语，完成了数学作业..."></textarea>
+                        <small class="form-text text-muted">按回车键或点击按钮提交</small>
+                    </div>
+                    <button class="btn btn-success btn-lg w-100" onclick="submitCheckin()">✅ 打卡</button>
+                </div>
+            </div>
+
+            <div class="row">
+                <!-- 我的打卡记录 -->
+                <div class="col-md-6 mb-4">
+                    <div class="card shadow-sm h-100">
+                        <div class="card-header bg-info text-white">
+                            <h4 class="mb-0">📝 我的打卡记录</h4>
+                        </div>
+                        <div class="card-body">
+                            <ul id="my-checkins" class="list-unstyled"></ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 小伙伴的打卡记录 -->
+                <div class="col-md-6 mb-4">
+                    <div class="card shadow-sm h-100">
+                        <div class="card-header bg-warning text-dark">
+                            <h4 class="mb-0">👥 小伙伴的打卡记录</h4>
+                        </div>
+                        <div class="card-body">
+                            <ul id="partner-checkins" class="list-unstyled"></ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="text-center mt-4">
+                <button class="btn btn-outline-danger" onclick="logout()">登出</button>
+            </div>
+        </div>
     </div>
-    <p id="load">Firebase SDK Loading&hellip;</p>
 
-    <script>
-      document.addEventListener('DOMContentLoaded', function() {
-        const loadEl = document.querySelector('#load');
-        // // 🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥
-        // // The Firebase SDK is initialized and available here!
-        //
-        // firebase.auth().onAuthStateChanged(user => { });
-        // firebase.database().ref('/path/to/ref').on('value', snapshot => { });
-        // firebase.firestore().doc('/foo/bar').get().then(() => { });
-        // firebase.functions().httpsCallable('yourFunction')().then(() => { });
-        // firebase.messaging().requestPermission().then(() => { });
-        // firebase.storage().ref('/path/to/ref').getDownloadURL().then(() => { });
-        // firebase.analytics(); // call to activate
-        // firebase.analytics().logEvent('tutorial_completed');
-        // firebase.performance(); // call to activate
-        //
-        // // 🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥
-
-        try {
-          let app = firebase.app();
-          let features = [
-            'auth', 
-            'database', 
-            'firestore',
-            'functions',
-            'messaging', 
-            'storage', 
-            'analytics', 
-            'remoteConfig',
-            'performance',
-          ].filter(feature => typeof app[feature] === 'function');
-          loadEl.textContent = `Firebase SDK loaded with ${features.join(', ')}`;
-        } catch (e) {
-          console.error(e);
-          loadEl.textContent = 'Error loading the Firebase SDK, check the console.';
-        }
-      });
-    </script>
-  </body>
+    <script src="script.js"></script>
+</body>
 </html>
