@@ -1,0 +1,14 @@
+{
+    "rules": {
+      "users": {
+        "user1": {
+          ".read": "auth.uid === 'dw5CV9FQ45eTQhsZv14MB8lIs9g2' || auth.uid === 'dgio57moiIhIXpzO2AYqhgeOAUP2'",
+          ".write": "auth.uid === 'dw5CV9FQ45eTQhsZv14MB8lIs9g2'"
+        },
+        "user2": {
+          ".read": "auth.uid === 'dgio57moiIhIXpzO2AYqhgeOAUP2' || auth.uid === 'dw5CV9FQ45eTQhsZv14MB8lIs9g2'",
+          ".write": "auth.uid === 'dgio57moiIhIXpzO2AYqhgeOAUP2'"
+        }
+      }
+    }
+  }

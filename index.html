@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>学习打卡系统</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="style.css">
+    <!-- Firebase SDK - 使用兼容版本（compat）以支持全局 firebase 对象 -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
+</head>
+<body>
+    <div class="container mt-4">
+        <div class="text-center mb-4">
+            <h1 class="display-4">📚 学习打卡系统</h1>
+            <p class="text-muted">记录每天的学习进度，互相监督，共同进步</p>
+        </div>
+
+        <!-- 登录表单 -->
+        <div id="login-form" class="card shadow-sm">
+            <div class="card-body p-4">
+                <h2 class="card-title text-center mb-4">登录</h2>
+                <div class="mb-3">
+                    <label for="email" class="form-label">邮箱</label>
+                    <input type="email" class="form-control form-control-lg" id="email" placeholder="your@email.com" autocomplete="email">
+                </div>
+                <div class="mb-3">
+                    <label for="password" class="form-label">密码</label>
+                    <input type="password" class="form-control form-control-lg" id="password" placeholder="请输入密码" autocomplete="current-password">
+                </div>
+                <button class="btn btn-primary btn-lg w-100" onclick="login()">登录</button>
+            </div>
+        </div>
+
+        <!-- 主内容区域 -->
+        <div id="main-content" style="display:none;">
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h3 class="mb-0">欢迎，<span id="user-name"></span>！</h3>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <label for="checkin-input" class="form-label">今天的学习情况</label>
+                        <textarea class="form-control" id="checkin-input" rows="3" placeholder="例如：今天学习了2小时英语，完成了数学作业..."></textarea>
+                        <small class="form-text text-muted">按回车键或点击按钮提交</small>
+                    </div>
+                    <button class="btn btn-success btn-lg w-100" onclick="submitCheckin()">✅ 打卡</button>
+                </div>
+            </div>
+
+            <div class="row">
+                <!-- 我的打卡记录 -->
+                <div class="col-md-6 mb-4">
+                    <div class="card shadow-sm h-100">
+                        <div class="card-header bg-info text-white">
+                            <h4 class="mb-0">📝 我的打卡记录</h4>
+                        </div>
+                        <div class="card-body">
+                            <ul id="my-checkins" class="list-unstyled"></ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 小伙伴的打卡记录 -->
+                <div class="col-md-6 mb-4">
+                    <div class="card shadow-sm h-100">
+                        <div class="card-header bg-warning text-dark">
+                            <h4 class="mb-0">👥 小伙伴的打卡记录</h4>
+                        </div>
+                        <div class="card-body">
+                            <ul id="partner-checkins" class="list-unstyled"></ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="text-center mt-4">
+                <button class="btn btn-outline-danger" onclick="logout()">登出</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

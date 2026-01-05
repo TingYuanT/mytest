@@ -1,0 +1,10 @@
+{
+  "rules": {
+    "users": {
+      "$user_id": {
+        ".read": "auth != null && (($user_id === 'user1' && auth.uid === 'dw5CV9FQ45eTQhsZv14MB8lIs9g2') || ($user_id === 'user2' && auth.uid === 'dgio57moiIhIXpzO2AYqhgeOAUP2'))",
+        ".write": "auth != null && (($user_id === 'user1' && auth.uid === 'dw5CV9FQ45eTQhsZv14MB8lIs9g2') || ($user_id === 'user2' && auth.uid === 'dgio57moiIhIXpzO2AYqhgeOAUP2'))"
+      }
+    }
+  }
+}
